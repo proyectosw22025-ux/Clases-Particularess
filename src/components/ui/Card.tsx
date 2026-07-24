@@ -15,7 +15,7 @@ export default function Card({ children, className = "", hover = false }: CardPr
     <div
       className={`
         bg-white rounded-xl border border-gray-200 shadow-sm
-        ${hover ? "hover:shadow-md hover:border-gray-300 transition-shadow duration-200" : ""}
+        ${hover ? "transition-all duration-200 hover:shadow-lg hover:border-blue-200 hover:-translate-y-1" : ""}
         ${className}
       `}
     >

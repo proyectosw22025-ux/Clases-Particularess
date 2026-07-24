@@ -93,8 +93,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-blue-600">ClasesYa</span>
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-indigo-500 transition-all">
+              ClasesYa
+            </span>
           </Link>
 
           {/* Links de navegación (desktop) */}

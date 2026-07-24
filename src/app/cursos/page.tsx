@@ -136,7 +136,7 @@ export default function CursosPage() {
             <Link
               key={c.id}
               href={`/cursos/${c.id}`}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow flex flex-col"
+              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200 transition-all flex flex-col"
             >
               <h3 className="font-semibold text-gray-900 line-clamp-2">{c.titulo}</h3>
               <p className="text-sm text-gray-600 mt-2 line-clamp-3 flex-1">{c.descripcion}</p>
