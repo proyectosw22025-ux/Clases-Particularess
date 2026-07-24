@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { obtenerUsuarioActual } from "@/lib/auth";
 import { mensajeSchema } from "@/lib/validations";
 import { busRealtime } from "@/lib/realtime/bus";
+import { notificar } from "@/lib/notificaciones";
 
 // Listar conversaciones o mensajes con un usuario específico
 export async function GET(request: NextRequest) {
@@ -171,13 +172,11 @@ export async function POST(request: NextRequest) {
     });
 
     // Crear notificación para el receptor
-    await prisma.notificacion.create({
-      data: {
-        usuarioId: receptorId,
-        tipo: "MENSAJE_NUEVO",
-        mensaje: `Nuevo mensaje de ${payload.nombre || "un usuario"}`,
-        enlace: `/mensajes?conUsuarioId=${payload.userId}`,
-      },
+    await notificar({
+      usuarioId: receptorId,
+      tipo: "MENSAJE_NUEVO",
+      mensaje: `Nuevo mensaje de ${payload.nombre || "un usuario"}`,
+      enlace: `/mensajes?conUsuarioId=${payload.userId}`,
     });
 
     // Empujar el mensaje en tiempo real a la conexión SSE del receptor (si la hay).

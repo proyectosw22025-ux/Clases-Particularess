@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { obtenerUsuarioActual } from "@/lib/auth";
 import { puedeModerar } from "@/lib/dominio/permisos";
+import { notificar } from "@/lib/notificaciones";
 
 export async function PATCH(
   request: NextRequest,
@@ -54,13 +55,11 @@ export async function PATCH(
 
     // Notificar al profesor cuando queda verificado.
     if (verificado === true) {
-      await prisma.notificacion.create({
-        data: {
-          usuarioId: id,
-          tipo: "PERFIL_VERIFICADO",
-          mensaje: "¡Tu perfil ha sido verificado! Ahora muestras la insignia de profesor verificado.",
-          enlace: "/profesores/dashboard",
-        },
+      await notificar({
+        usuarioId: id,
+        tipo: "PERFIL_VERIFICADO",
+        mensaje: "¡Tu perfil ha sido verificado! Ahora muestras la insignia de profesor verificado.",
+        enlace: "/profesores/dashboard",
       });
     }
 

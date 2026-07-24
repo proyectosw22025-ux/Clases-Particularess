@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
+import CampanaNotificaciones from "@/components/layout/CampanaNotificaciones";
 import { puedeModerar } from "@/lib/dominio/permisos";
 
 interface Usuario {
@@ -130,6 +131,8 @@ export default function Navbar() {
                 )}
               </Link>
             )}
+
+            {usuario && <CampanaNotificaciones />}
 
             {cargandoAuth ? (
               <div className="w-24 h-8" />

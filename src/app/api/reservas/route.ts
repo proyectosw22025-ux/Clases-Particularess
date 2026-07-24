@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { obtenerUsuarioActual } from "@/lib/auth";
 import { reservaSchema } from "@/lib/validations";
 import { esDiaPasado, jsDayADiaSemana, filtroSolapamientoPrisma } from "@/lib/dominio";
+import { notificar } from "@/lib/notificaciones";
 
 // Error interno para abortar la transacción cuando un horario ya está ocupado.
 class ConflictoReserva extends Error {}
@@ -233,13 +234,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Notificar al profesor de la nueva reserva
-    await prisma.notificacion.create({
-      data: {
-        usuarioId: reserva.servicio.profesor.id,
-        tipo: "RESERVA_NUEVA",
-        mensaje: `Nueva reserva de ${payload.nombre} para ${reserva.servicio.materia}`,
-        enlace: `/profesores/dashboard`,
-      },
+    await notificar({
+      usuarioId: reserva.servicio.profesor.id,
+      tipo: "RESERVA_NUEVA",
+      mensaje: `Nueva reserva de ${payload.nombre} para ${reserva.servicio.materia}`,
+      enlace: `/profesores/dashboard`,
     });
 
     return NextResponse.json(

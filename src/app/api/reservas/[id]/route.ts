@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { obtenerUsuarioActual } from "@/lib/auth";
 import { validarTransicionReserva, reservaYaOcurrio, type EstadoReserva } from "@/lib/dominio";
+import { notificar } from "@/lib/notificaciones";
 
 // Obtener detalle de una reserva
 export async function GET(
@@ -137,13 +138,11 @@ export async function PATCH(
       estado === "CANCELADA" ? `La reserva de ${reservaActualizada.servicio.materia} ha sido cancelada` :
       `La clase de ${reservaActualizada.servicio.materia} ha sido completada. ¡Deja tu reseña!`;
 
-    await prisma.notificacion.create({
-      data: {
-        usuarioId: destinatarioId,
-        tipo: tipoNotificacion,
-        mensaje: mensajeTexto,
-        enlace: esProfesor ? `/estudiantes/dashboard` : `/profesores/dashboard`,
-      },
+    await notificar({
+      usuarioId: destinatarioId,
+      tipo: tipoNotificacion,
+      mensaje: mensajeTexto,
+      enlace: esProfesor ? `/estudiantes/dashboard` : `/profesores/dashboard`,
     });
 
     return NextResponse.json({

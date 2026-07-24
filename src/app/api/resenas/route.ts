@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { obtenerUsuarioActual } from "@/lib/auth";
 import { resenaSchema } from "@/lib/validations";
+import { notificar } from "@/lib/notificaciones";
 
 // Crear una reseña
 export async function POST(request: NextRequest) {
@@ -80,13 +81,11 @@ export async function POST(request: NextRequest) {
     });
 
     // Notificar al profesor de la nueva reseña
-    await prisma.notificacion.create({
-      data: {
-        usuarioId: reserva.servicio.profesorId,
-        tipo: "RESENA_NUEVA",
-        mensaje: `Nueva reseña (${calificacion}★) en ${reserva.servicio.materia}`,
-        enlace: `/profesores/dashboard`,
-      },
+    await notificar({
+      usuarioId: reserva.servicio.profesorId,
+      tipo: "RESENA_NUEVA",
+      mensaje: `Nueva reseña (${calificacion}★) en ${reserva.servicio.materia}`,
+      enlace: `/profesores/dashboard`,
     });
 
     return NextResponse.json(

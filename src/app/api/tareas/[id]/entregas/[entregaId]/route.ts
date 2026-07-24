@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { obtenerUsuarioActual } from "@/lib/auth";
 import { calificacionSchema } from "@/lib/validations";
+import { notificar } from "@/lib/notificaciones";
 
 export async function PATCH(
   request: NextRequest,
@@ -53,13 +54,11 @@ export async function PATCH(
     });
 
     // Notificar al estudiante que su entrega fue calificada
-    await prisma.notificacion.create({
-      data: {
-        usuarioId: entrega.estudianteId,
-        tipo: "ENTREGA_CALIFICADA",
-        mensaje: `Tu entrega de "${entrega.tarea.titulo}" fue calificada: ${calificacion}/100`,
-        enlace: `/cursos`,
-      },
+    await notificar({
+      usuarioId: entrega.estudianteId,
+      tipo: "ENTREGA_CALIFICADA",
+      mensaje: `Tu entrega de "${entrega.tarea.titulo}" fue calificada: ${calificacion}/100`,
+      enlace: `/cursos`,
     });
 
     return NextResponse.json({ mensaje: "Entrega calificada", entrega: actualizada });
