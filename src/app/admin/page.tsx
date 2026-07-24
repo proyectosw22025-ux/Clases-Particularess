@@ -9,8 +9,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import Button from "@/components/ui/Button";
 import BadgeVerificado from "@/components/ui/BadgeVerificado";
+import Cargando from "@/components/ui/Cargando";
 import { puedeModerar, puedeAdministrarUsuarios, ROLES_ASIGNABLES, type Rol } from "@/lib/dominio/permisos";
 
 interface ProfesorAdmin {
@@ -120,7 +122,9 @@ export default function AdminPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        alert(data.error || "No se pudo actualizar el usuario");
+        toast.error(data.error || "No se pudo actualizar el usuario");
+      } else {
+        toast.success("Usuario actualizado");
       }
       await cargarUsuarios(busqueda);
     } finally {
@@ -129,7 +133,7 @@ export default function AdminPage() {
   };
 
   if (cargando) {
-    return <div className="max-w-5xl mx-auto px-4 py-12 text-center text-gray-500">Cargando…</div>;
+    return <Cargando />;
   }
 
   const esAdmin = miRol ? puedeAdministrarUsuarios(miRol) : false;

@@ -8,6 +8,7 @@ import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ClaseCard from "@/components/clases/ClaseCard";
 import Button from "@/components/ui/Button";
+import { FadeIn } from "@/components/ui/Motion";
 
 interface Servicio {
   id: string;
@@ -205,20 +206,21 @@ function ClasesContent() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {servicios.map((servicio) => (
-              <ClaseCard
-                key={servicio.id}
-                id={servicio.id}
-                materia={servicio.materia}
-                descripcion={servicio.descripcion || ""}
-                precioHora={servicio.precioHora}
-                modalidad={servicio.modalidad}
-                nivel={servicio.nivel}
-                duracionMin={servicio.duracionMin}
-                calificacionPromedio={servicio.calificacionPromedio}
-                totalResenas={servicio.totalResenas}
-                profesor={servicio.profesor}
-              />
+            {servicios.map((servicio, i) => (
+              <FadeIn key={servicio.id} delay={Math.min(i * 0.05, 0.3)} className="h-full">
+                <ClaseCard
+                  id={servicio.id}
+                  materia={servicio.materia}
+                  descripcion={servicio.descripcion || ""}
+                  precioHora={servicio.precioHora}
+                  modalidad={servicio.modalidad}
+                  nivel={servicio.nivel}
+                  duracionMin={servicio.duracionMin}
+                  calificacionPromedio={servicio.calificacionPromedio}
+                  totalResenas={servicio.totalResenas}
+                  profesor={servicio.profesor}
+                />
+              </FadeIn>
             ))}
           </div>
 

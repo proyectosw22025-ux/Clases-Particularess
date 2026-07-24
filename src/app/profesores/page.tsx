@@ -7,6 +7,7 @@
 import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ProfesorCard from "@/components/profesores/ProfesorCard";
+import { FadeIn } from "@/components/ui/Motion";
 import Button from "@/components/ui/Button";
 
 interface Profesor {
@@ -168,19 +169,20 @@ function ProfesoresContent() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {profesores.map((profesor) => (
-              <ProfesorCard
-                key={profesor.id}
-                id={profesor.id}
-                nombre={profesor.nombre}
-                foto={profesor.foto}
-                bio={profesor.bio}
-                ubicacion={profesor.ubicacion}
-                verificado={profesor.verificado}
-                calificacionPromedio={profesor.calificacionPromedio}
-                totalResenas={profesor.totalResenas}
-                servicios={profesor.servicios}
-              />
+            {profesores.map((profesor, i) => (
+              <FadeIn key={profesor.id} delay={Math.min(i * 0.05, 0.3)} className="h-full">
+                <ProfesorCard
+                  id={profesor.id}
+                  nombre={profesor.nombre}
+                  foto={profesor.foto}
+                  bio={profesor.bio}
+                  ubicacion={profesor.ubicacion}
+                  verificado={profesor.verificado}
+                  calificacionPromedio={profesor.calificacionPromedio}
+                  totalResenas={profesor.totalResenas}
+                  servicios={profesor.servicios}
+                />
+              </FadeIn>
             ))}
           </div>
 

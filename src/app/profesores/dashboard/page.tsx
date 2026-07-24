@@ -6,10 +6,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Button from "@/components/ui/Button";
 import ProfesorForm from "@/components/profesores/ProfesorForm";
 import ReservaCard from "@/components/reservas/ReservaCard";
 import Modal from "@/components/ui/Modal";
+import { useConfirm } from "@/components/ui/ConfirmProvider";
 
 interface Servicio {
   id: string;
@@ -63,6 +65,7 @@ const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sáb
 
 export default function ProfesorDashboardPage() {
   const router = useRouter();
+  const confirmar = useConfirm();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [reservas, setReservas] = useState<Reserva[]>([]);
@@ -171,10 +174,21 @@ export default function ProfesorDashboardPage() {
   };
 
   const handleEliminarServicio = async (id: string) => {
-    if (!confirm("¿Seguro que quieres eliminar este servicio?")) return;
+    const ok = await confirmar({
+      titulo: "Eliminar servicio",
+      mensaje: "¿Seguro que quieres eliminar este servicio? Dejará de aparecer en el catálogo.",
+      textoConfirmar: "Eliminar",
+      peligro: true,
+    });
+    if (!ok) return;
 
     const res = await fetch(`/api/clases/${id}`, { method: "DELETE" });
-    if (res.ok) fetchDatos();
+    if (res.ok) {
+      toast.success("Servicio eliminado");
+      fetchDatos();
+    } else {
+      toast.error("No se pudo eliminar el servicio");
+    }
   };
 
   const handleCambiarEstadoReserva = async (id: string, estado: string) => {

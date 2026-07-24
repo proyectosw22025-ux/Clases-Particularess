@@ -7,6 +7,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import Button from "@/components/ui/Button";
 import StarRating from "@/components/ui/StarRating";
 import ReservaForm from "@/components/reservas/ReservaForm";
@@ -99,10 +100,11 @@ export default function ClaseDetallePage() {
 
     if (res.ok) {
       setMostrarReserva(false);
+      toast.success("¡Reserva creada! Te llevamos a tu panel.");
       router.push("/estudiantes/dashboard");
     } else {
       const data = await res.json();
-      alert(data.error || "Error al crear la reserva");
+      toast.error(data.error || "Error al crear la reserva");
     }
   };
 

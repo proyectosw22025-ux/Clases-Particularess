@@ -10,6 +10,8 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import BadgeVerificado from "@/components/ui/BadgeVerificado";
+import Cargando from "@/components/ui/Cargando";
+import { FadeIn } from "@/components/ui/Motion";
 
 interface Curso {
   id: string;
@@ -121,7 +123,7 @@ export default function CursosPage() {
       )}
 
       {cargando ? (
-        <p className="text-gray-500">Cargando…</p>
+        <Cargando />
       ) : cursos.length === 0 ? (
         <p className="text-gray-500">
           {tab === "mios"
@@ -132,11 +134,11 @@ export default function CursosPage() {
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cursos.map((c) => (
+          {cursos.map((c, i) => (
+            <FadeIn key={c.id} delay={Math.min(i * 0.05, 0.3)} className="h-full">
             <Link
-              key={c.id}
               href={`/cursos/${c.id}`}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200 transition-all flex flex-col"
+              className="h-full bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200 transition-all flex flex-col"
             >
               <h3 className="font-semibold text-gray-900 line-clamp-2">{c.titulo}</h3>
               <p className="text-sm text-gray-600 mt-2 line-clamp-3 flex-1">{c.descripcion}</p>
@@ -149,6 +151,7 @@ export default function CursosPage() {
                 <span>{c._count.materiales} material{c._count.materiales !== 1 ? "es" : ""}</span>
               </div>
             </Link>
+            </FadeIn>
           ))}
         </div>
       )}

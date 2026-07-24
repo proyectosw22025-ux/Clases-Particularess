@@ -7,6 +7,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/ui/Button";
+import Cargando from "@/components/ui/Cargando";
 
 interface UsuarioBasico {
   id: string;
@@ -164,7 +165,7 @@ function MensajesContenido() {
 
   if (cargando) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-12 text-center text-gray-500">Cargando mensajes…</div>
+      <Cargando texto="Cargando mensajes…" />
     );
   }
 
@@ -280,7 +281,7 @@ function MensajesContenido() {
 
 export default function MensajesPage() {
   return (
-    <Suspense fallback={<div className="max-w-5xl mx-auto px-4 py-12 text-center text-gray-500">Cargando…</div>}>
+    <Suspense fallback={<Cargando />}>
       <MensajesContenido />
     </Suspense>
   );

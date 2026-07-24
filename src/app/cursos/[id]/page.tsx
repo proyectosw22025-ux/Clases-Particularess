@@ -7,8 +7,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import Button from "@/components/ui/Button";
 import BadgeVerificado from "@/components/ui/BadgeVerificado";
+import Cargando from "@/components/ui/Cargando";
+import { useConfirm } from "@/components/ui/ConfirmProvider";
 
 interface Material {
   id: string;
@@ -58,6 +61,7 @@ function formatearBytes(n: number | null): string {
 export default function CursoDetallePage() {
   const params = useParams();
   const id = params.id as string;
+  const confirmar = useConfirm();
 
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [data, setData] = useState<CursoDetalle | null>(null);
@@ -138,10 +142,12 @@ export default function CursoDetallePage() {
     setAccion(true);
     try {
       const res = await fetch(`/api/cursos/${id}/inscripcion`, { method: "POST" });
-      if (res.ok) await cargar();
-      else {
+      if (res.ok) {
+        toast.success("¡Te inscribiste en el curso!");
+        await cargar();
+      } else {
         const d = await res.json().catch(() => ({}));
-        alert(d.error || "No se pudo inscribir");
+        toast.error(d.error || "No se pudo inscribir");
       }
     } finally {
       setAccion(false);
@@ -149,7 +155,13 @@ export default function CursoDetallePage() {
   };
 
   const darseDeBaja = async () => {
-    if (!confirm("¿Darte de baja de este curso?")) return;
+    const ok = await confirmar({
+      titulo: "Darse de baja",
+      mensaje: "¿Seguro que quieres darte de baja de este curso? Perderás el acceso al material.",
+      textoConfirmar: "Darme de baja",
+      peligro: true,
+    });
+    if (!ok) return;
     setAccion(true);
     try {
       const res = await fetch(`/api/cursos/${id}/inscripcion`, { method: "DELETE" });
@@ -188,7 +200,13 @@ export default function CursoDetallePage() {
   };
 
   const borrarMaterial = async (materialId: string) => {
-    if (!confirm("¿Eliminar este material?")) return;
+    const ok = await confirmar({
+      titulo: "Eliminar material",
+      mensaje: "¿Eliminar este material? Esta acción no se puede deshacer.",
+      textoConfirmar: "Eliminar",
+      peligro: true,
+    });
+    if (!ok) return;
     setAccion(true);
     try {
       const res = await fetch(`/api/cursos/${id}/materiales/${materialId}`, { method: "DELETE" });
@@ -199,7 +217,7 @@ export default function CursoDetallePage() {
   };
 
   if (cargando) {
-    return <div className="max-w-4xl mx-auto px-4 py-12 text-gray-500">Cargando…</div>;
+    return <Cargando />;
   }
   if (error || !data) {
     return (

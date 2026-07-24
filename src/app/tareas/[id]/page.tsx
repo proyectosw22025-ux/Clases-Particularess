@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import Cargando from "@/components/ui/Cargando";
 
 interface EntregaBase {
   id: string;
@@ -180,7 +181,7 @@ export default function TareaDetallePage() {
     }
   };
 
-  if (cargando) return <div className="max-w-3xl mx-auto px-4 py-12 text-gray-500">Cargando…</div>;
+  if (cargando) return <Cargando />;
   if (error || !data) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
